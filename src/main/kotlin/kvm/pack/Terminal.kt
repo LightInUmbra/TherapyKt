@@ -39,7 +39,7 @@ fun response(lambda: Response.() -> Unit): Response {
 
 // Loads & Reads JSON Configuration
 fun loadConfig() {
-    val bufferedReader = URL("https://gist.githubusercontent.com/AwesomeAuuki/23e640987af3a4cf780cd783b41b7d9f/raw/3069c53db03d4df1d92a30fd0e0d958e42aa25fd/messages.json").readText()
+    val bufferedReader = URL("https://raw.githubusercontent.com/TechnoInventor/TherapyKt/master/messages.json").readText()
     val response = Gson().fromJson(bufferedReader, Responses::class.java)
     allResponses.addAll(arrayListOf(response {
         responses = response.bad
