@@ -1,11 +1,10 @@
 package kvm.pack
 
 import com.google.gson.Gson
-
 import java.io.File
 import java.io.PrintWriter
 import java.net.URL
-import kotlin.collections.ArrayList
+import java.util.*
 import kotlin.system.exitProcess
 
 class Response {
@@ -14,23 +13,10 @@ class Response {
 }
 
 
-data class Responses(val good: ArrayList<String>, val  bad: ArrayList<String>)
-
-// Creates kvm.pack.person class
-fun person(lambda: Person.() -> Unit): Person {
-    val person = Person()
-    person.apply(lambda)
-    return person
-}
-
-// Declaring class
-var person = person {}
-
-class Person {
-    var name: String = ""
-}
+data class Responses(val good: ArrayList<String>, val bad: ArrayList<String>)
 
 private val allResponses = arrayListOf<Response>()
+
 fun response(lambda: Response.() -> Unit): Response {
     val response = Response()
     response.apply(lambda)
@@ -39,24 +25,25 @@ fun response(lambda: Response.() -> Unit): Response {
 
 // Loads & Reads JSON Configuration
 fun loadConfig() {
-    val bufferedReader = URL("https://raw.githubusercontent.com/TechnoInventor/TherapyKt/master/messages.json").readText()
+    val bufferedReader = URL("https://git.io/JYTHM").readText()
     val response = Gson().fromJson(bufferedReader, Responses::class.java)
-    allResponses.addAll(arrayListOf(response {
-        responses = response.bad
-        fitness = 1
-    }, response {
-        responses = response.good
-        fitness = 0
-    }))
+    allResponses.addAll(arrayListOf(
+        response {
+            responses = response.bad
+            fitness = 1
+        },
+        response {
+            responses = response.good
+            fitness = 0
+        },
+    ))
 }
 
 // Name input, loops if no kvm.pack.response
 fun createName() {
-    val name = "Please enter a name!".newLine()
-    if (!name.isBlank()) {
-        person.name = name
-        "Great to meet cha, ${person.name}".print()
-    }
+    val name = "Please enter a name!".newLine().ifBlank { createName() }
+    "Great to meet cha, $name".print()
+    askMood()
 }
 
 // Asks how you're doing. Loops if you don't say yes or no
@@ -107,7 +94,15 @@ val lines = arrayListOf<String>()
 
 fun String.newLine(): String {
     println(String.format("%s\n", this))
-    return readLine()!!.split("\\s+".toRegex())[0].toLowerCase()
+    return try {
+        val pattern = Regex("\\s+").pattern
+        val result = StringTokenizer(readLine(), pattern)
+        var tokens = emptyArray<String>()
+        while (result.hasMoreTokens()) tokens += result.nextToken()
+        tokens[0].toLowerCase()
+    } catch (ex: Exception) {
+        "Please enter a valid response!".newLine()
+    }
 }
 
 // Journal Entry, has option to save after typing
@@ -115,7 +110,6 @@ fun freeText() {
     while (true) {
         val line = readLine() ?: break
         lines += line
-
         if (line == "exit") {
             lines.remove("exit")
             break
@@ -163,7 +157,6 @@ If you are in a really bad spot, you feel like harming yourself, or others,
 don't hesitate. Call someone. Let someone know how you feel. The situation will
 only get worse if you don't speak up. I encourage you to find help!
     """.print()
-
     arrayListOf(
         "Thank you for using the program! Please leave feedback by emailing\n" +
                 "migsterfixer@gmail.com", "Press Enter To Exit: "
@@ -173,8 +166,5 @@ only get worse if you don't speak up. I encourage you to find help!
 // Everyone knows what this does
 fun main() {
     loadConfig()
-    do {
-        createName()
-    } while (person.name.isBlank())
-    askMood()
+    createName()
 }
