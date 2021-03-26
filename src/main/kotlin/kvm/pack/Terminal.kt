@@ -49,12 +49,15 @@ fun createName() {
 // Asks how you're doing. Loops if you don't say yes or no
 fun askMood() {
     val moodResponse = "So, How is everything?".newLine()
-    val moodFilter = allResponses.filter { it.responses.contains(moodResponse) }
-    if (moodFilter.isNullOrEmpty()) {
-        "Please answer with yes or no".print()
-        askMood()
+    val response = allResponses.firstOrNull { it.responses.contains(moodResponse) }
+    when {
+        response == null -> {
+            "Please answer with yes or no".print()
+            askMood()
+        }
+        response.fitness == 0 -> goodMood()
+        else -> badMood()
     }
-    moodFilter.forEach { if (it.fitness == 0) goodMood() else badMood() }
 }
 
 fun String.breakPause() {
