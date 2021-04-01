@@ -9,25 +9,14 @@ import kotlin.system.exitProcess
 data class Response(var bad: HashSet<String> = HashSet(), var good: HashSet<String> = HashSet(), var fitness: Int = 0)
 
 private val allResponses = hashSetOf<Response>()
-fun response(lambda: Response.() -> Unit): Response {
-    val response = Response()
-    response.apply(lambda)
-    return response
-}
 
 // Loads & Reads JSON Configuration
 fun loadConfig() =
     URL("https://raw.githubusercontent.com/TechnoInventor/TherapyKt/master/messages.json").readText().let {
         Gson().fromJson(it, Response::class.java).let { resp ->
-            allResponses += arrayListOf(
-                response {
-                    bad = resp.bad
-                    fitness = 1
-                },
-                response {
-                    bad = resp.good
-                    fitness = 0
-                }
+            allResponses += hashSetOf(
+                Response(bad = resp.good, fitness = 1),
+                Response(good = resp.bad, fitness = 0)
             )
         }
     }
@@ -130,7 +119,10 @@ If you are in a really bad spot, you feel like harming yourself, or others,
 don't hesitate. Call someone. Let someone know how you feel. The situation will
 only get worse if you don't speak up. I encourage you to find help!
     """.print().let {
-        arrayListOf("Thank you for using the program! Please leave feedback by emailing\n".plus("migsterfixer@gmail.com"), "Press Enter To Exit: ").sendLines()
+        arrayListOf(
+            "Thank you for using the program! Please leave feedback by emailing\n".plus("migsterfixer@gmail.com"),
+            "Press Enter To Exit: "
+        ).sendLines()
     }
 }
 
