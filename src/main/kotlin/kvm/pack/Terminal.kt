@@ -137,10 +137,9 @@ fun badMoodCont() {
 If you are in a really bad spot, you feel like harming yourself, or others,
 don't hesitate. Call someone. Let someone know how you feel. The situation will
 only get worse if you don't speak up. I encourage you to find help!
-    """.print()
-
-    arrayListOf("Thank you for using the program! Please leave feedback by emailing\n" +
-            "migsterfixer@gmail.com", "Press Enter To Exit: ").sendLines()
+    """.print().let {
+        arrayListOf("Thank you for using the program! Please leave feedback by emailing\n".plus("migsterfixer@gmail.com"), "Press Enter To Exit: ").sendLines()
+    }
 }
 
 // Everyone knows what this does
