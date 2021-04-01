@@ -1,8 +1,6 @@
 package kvm.pack
 
 import com.google.gson.Gson
-
-import java.io.File
 import java.io.PrintWriter
 import java.net.URL
 import kotlin.collections.ArrayList
@@ -25,7 +23,8 @@ fun loadConfig() =
                 response {
                     bad = resp.bad
                     fitness = 1
-                }, response {
+                },
+                response {
                     bad = resp.good
                     fitness = 0
                 }
@@ -74,8 +73,7 @@ yes or no?""".newLine().let {
     if (it == "yes") {
         "Great! Please make sure to type exit when you're done.\n\n".print()
         freeText()
-    }
-    else badMoodCont()
+    } else badMoodCont()
 }
 
 val lines = arrayListOf<String>()
@@ -107,25 +105,19 @@ fun ArrayList<String>.sendLines(): String {
 // Decides whether to save or not
 fun saveFile() {
     when ("Would you like to save this?\n[Yes]\t\t[No]".newLine()) {
-        "yes" -> {
-            val file = "Name Of File?".newLine()
-            PrintWriter(File("$file.txt")).apply {
+        "yes" -> "Name Of File?".newLine().let {
+            return@let PrintWriter(it).apply {
                 write(lines.joinToString("\n"))
                 flush()
                 close()
+                "Thank you for using the program! Please leave feedback by emailing\nmigsterfixer@gmail.com\nPress Enter To Exit: ".newLine()
             }
-            "Thank you for using the program! Please leave feedback by emailing\nmigsterfixer@gmail.com\nPress Enter To Exit: ".newLine()
         }
-        "no" -> {
-            arrayListOf(
-                "Awh, well alright! I hope you were able to de-stress!",
-                "Thank you for using the program! Please leave feedback by emailing\n".plus("migsterfixer@gmail.com")
-            ).sendLines()
-        }
-        else -> {
-            "Please type yes or no\n".breakPause()
-            saveFile()
-        }
+        "no" -> arrayListOf(
+            "Awh, well alright! I hope you were able to de-stress!",
+            "Thank you for using the program! Please leave feedback by emailing\n".plus("migsterfixer@gmail.com")
+        ).sendLines()
+        else -> "Please type yes or no\n".breakPause().run { saveFile() }
     }
 }
 
