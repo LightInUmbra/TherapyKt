@@ -1,7 +1,12 @@
 package kvm.pack
 
+/***
+ * Therapy.kt (new-preset)
+ * @author il2archi
+ * @see `README.md` learn, how to use!
+ */
 
-interface Pagination<T: Any> {
+interface Pagination<T : Any> {
     fun getPage(): T?
     fun getAllPages(): List<T>
 }
@@ -21,7 +26,7 @@ interface IPage {
     fun action(): Actions
 }
 
-data class Page(override val title: String?, override val type: PageType = PageType.SELECTION): IPage {
+data class Page(override val title: String?, override val type: PageType = PageType.SELECTION) : IPage {
     private var options: Map<Int, String> = mapOf(
         0 to "Start therapy session",
         1 to "Exit"
@@ -34,7 +39,7 @@ data class Page(override val title: String?, override val type: PageType = PageT
     }
 }
 
-data class Bot(val name: String, val pager: Map<Int, Page>): Pagination<Page> {
+data class Bot(val name: String, val pager: Map<Int, Page>) : Pagination<Page> {
     override fun getPage(): Page {
         return getAllPages()[0]
     }
